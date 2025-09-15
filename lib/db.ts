@@ -34,7 +34,7 @@ export async function getSpendings(): Promise<Spending[]> {
       familyCode: row.family_code,
       createdAt: row.created_at,
       date: row.date,
-      paymentMethod: row.payment_method || "card",
+      paymentMethod: (row.payment_method as any) || "card",
     }))
 
     console.log("[v0] 지출 데이터 조회:", spendings.length, "개")
@@ -72,7 +72,7 @@ export async function getSpendingsByFamilyCodes(targetFamilyCodes: string[]): Pr
       familyCode: row.family_code,
       createdAt: row.created_at,
       date: row.date,
-      paymentMethod: row.payment_method || "card",
+      paymentMethod: (row.payment_method as any) || "card",
     }))
 
     console.log("[v0] 지출 데이터 조회 (DB 필터):", spendings.length, "개")
@@ -130,7 +130,8 @@ export async function addSpending(spending: Omit<Spending, "id" | "createdAt">):
       category: sanitizeString(spending.category),
       date: finalDate, // YYYY-MM-DD format
       spender: sanitizeString(spending.userName),
-      payment_method: spending.paymentMethod || "card",
+      // payment_method 컬럼이 없을 수 있으므로 일단 제외
+      // payment_method: spending.paymentMethod || "card",
     }
     console.log("[v0] addSpending - 삽입할 데이터:", insertData)
     

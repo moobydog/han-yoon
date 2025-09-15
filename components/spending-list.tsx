@@ -178,37 +178,39 @@ export default function SpendingList({ spendings, onRefresh }: SpendingListProps
           <CardTitle className="text-lg">지출 내역</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="divide-y">
+          <div className="divide-y overflow-x-auto">
             {filteredSpendings.map((spending) => (
               <div key={spending.id} className="p-4 hover:bg-gray-50">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className="font-medium text-gray-900">{formatAmount(spending.amount)}원</span>
-                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                <div className="flex items-center justify-between min-w-[800px]">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center space-x-2 mb-1 flex-wrap">
+                      <span className="font-medium text-gray-900 text-lg">{formatAmount(spending.amount)}원</span>
+                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full whitespace-nowrap">
                         {spending.category}
                       </span>
-                      <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full flex items-center gap-1">
+                      <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full flex items-center gap-1 whitespace-nowrap">
                         <span>{getPaymentMethodIcon(spending.paymentMethod || "card")}</span>
                         <span>{getPaymentMethodLabel(spending.paymentMethod || "card")}</span>
                       </span>
                     </div>
-                    {spending.memo && <div className="text-sm text-gray-600 mb-1">{spending.memo}</div>}
+                    {spending.memo && <div className="text-sm text-gray-600 mb-1 truncate">{spending.memo}</div>}
                     <div className="flex items-center space-x-2 text-xs text-gray-500">
                       <span>{spending.userName}</span>
                       <span>•</span>
                       <span>{formatDate(spending.createdAt)}</span>
                     </div>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDeleteClick(spending)}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-300 bg-red-50 p-2 h-8 w-8 flex-shrink-0"
-                    title="삭제하기"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                  <div className="flex-shrink-0 ml-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDeleteClick(spending)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-300 bg-red-50 p-2 h-8 w-8"
+                      title="삭제하기"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
