@@ -4,11 +4,12 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, DollarSign, Calendar } from "lucide-react"
+import { ChevronLeft, ChevronRight, TrendingUp, TrendingDown, DollarSign, Calendar, Trash2 } from "lucide-react"
 import Navigation from "@/components/navigation"
 import ThemeToggle from "@/components/theme-toggle"
 import TodaySpendingList from "@/components/today-spending-list"
 import IncomeList from "@/components/income-list"
+import DeleteConfirmation from "@/components/delete-confirmation"
 import type { User, Spending, Income } from "@/lib/types"
 
 export default function DashboardPage() {
@@ -19,6 +20,15 @@ export default function DashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const [refreshTrigger, setRefreshTrigger] = useState(0)
+  const [deleteConfirm, setDeleteConfirm] = useState<{
+    isOpen: boolean
+    record: Spending | Income | null
+    isDeleting: boolean
+  }>({
+    isOpen: false,
+    record: null,
+    isDeleting: false
+  })
   const router = useRouter()
 
   useEffect(() => {
@@ -96,6 +106,59 @@ export default function DashboardPage() {
 
   const goToCurrentMonth = () => {
     setSelectedMonth(new Date())
+  }
+
+  const handleDeleteClick = (record: Spending | Income) => {
+    setDeleteConfirm({
+      isOpen: true,
+      record: record,
+      isDeleting: false
+    })
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteConfirm.record) return
+
+    setDeleteConfirm(prev => ({ ...prev, isDeleting: true }))
+
+    try {
+      const isSpending = 'amount' in deleteConfirm.record
+      const endpoint = isSpending ? '/api/spending' : '/api/income'
+      
+      console.log(`[v0] ${isSpending ? '지출' : '수입'} 삭제 시작:`, deleteConfirm.record.id)
+      
+      const response = await fetch(`${endpoint}?id=${deleteConfirm.record.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.ok) {
+        console.log(`[v0] ${isSpending ? '지출' : '수입'} 삭제 성공:`, deleteConfirm.record.id)
+        loadData() // 데이터 새로고침
+      } else {
+        const result = await response.json()
+        alert(result.error || "삭제에 실패했습니다.")
+      }
+    } catch (error) {
+      console.error(`[v0] ${'amount' in deleteConfirm.record ? '지출' : '수입'} 삭제 에러:`, error)
+      alert("삭제 중 오류가 발생했습니다.")
+    } finally {
+      setDeleteConfirm({
+        isOpen: false,
+        record: null,
+        isDeleting: false
+      })
+    }
+  }
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirm({
+      isOpen: false,
+      record: null,
+      isDeleting: false
+    })
   }
 
   if (!user) {
@@ -338,11 +401,11 @@ export default function DashboardPage() {
                             key={`${'amount' in transaction ? 'spending' : 'income'}-${transaction.id}`}
                             className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
                           >
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 flex-1">
                               <div className={`w-2 h-2 rounded-full ${
                                 'amount' in transaction ? 'bg-red-500' : 'bg-green-500'
                               }`} />
-                              <div>
+                              <div className="flex-1">
                                 <div className="font-medium">{transaction.category}</div>
                                 <div className="text-sm text-muted-foreground">
                                   {transaction.memo && `${transaction.memo} • `}
@@ -350,10 +413,21 @@ export default function DashboardPage() {
                                 </div>
                               </div>
                             </div>
-                            <div className={`font-semibold ${
-                              'amount' in transaction ? 'text-red-600' : 'text-green-600'
-                            }`}>
-                              {'amount' in transaction ? '-' : '+'}{transaction.amount.toLocaleString()}원
+                            <div className="flex items-center gap-3">
+                              <div className={`font-semibold ${
+                                'amount' in transaction ? 'text-red-600' : 'text-green-600'
+                              }`}>
+                                {'amount' in transaction ? '-' : '+'}{transaction.amount.toLocaleString()}원
+                              </div>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleDeleteClick(transaction)}
+                                className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 h-8 w-8 flex-shrink-0 border border-red-200"
+                                title="삭제하기"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
                             </div>
                           </div>
                         ))}
@@ -383,6 +457,16 @@ export default function DashboardPage() {
           )}
         </div>
       </main>
+
+      {/* 삭제 확인 다이얼로그 */}
+      <DeleteConfirmation
+        isOpen={deleteConfirm.isOpen}
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        isDeleting={deleteConfirm.isDeleting}
+        title={deleteConfirm.record && 'amount' in deleteConfirm.record ? "지출 삭제" : "수입 삭제"}
+        message={`${deleteConfirm.record?.amount.toLocaleString()}원 ${deleteConfirm.record && 'amount' in deleteConfirm.record ? '지출' : '수입'}을 삭제하시겠습니까?`}
+      />
     </div>
   )
 }

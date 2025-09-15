@@ -79,7 +79,11 @@ export default function HomePage() {
                 <SpendingForm user={user} onSpendingAdded={handleSpendingAdded} />
                 
                 {/* 오늘의 지출 내역 */}
-                <TodaySpendingList user={user} refreshTrigger={refreshTrigger} />
+                <TodaySpendingList 
+                  user={user} 
+                  refreshTrigger={refreshTrigger} 
+                  onSpendingDeleted={handleSpendingAdded}
+                />
               </TabsContent>
               
               <TabsContent value="income" className="space-y-6">
