@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
-import { CATEGORIES, type User, getCategoryGroup } from "@/lib/types"
+import { CATEGORIES, PAYMENT_METHODS, type User, type PaymentMethod, getCategoryGroup } from "@/lib/types"
 
 interface SpendingFormProps {
   user: User
@@ -23,6 +23,7 @@ export default function SpendingForm({ user, onSpendingAdded }: SpendingFormProp
   const [isRecurring, setIsRecurring] = useState(false)
   const [dayOfMonth, setDayOfMonth] = useState("1")
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0])
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("card")
 
   const categoryGroups = CATEGORIES.reduce(
     (groups, category) => {
@@ -81,6 +82,7 @@ export default function SpendingForm({ user, onSpendingAdded }: SpendingFormProp
             userName: user.name,
             familyCode: user.familyCode,
             dayOfMonth: Number.parseInt(dayOfMonth),
+            paymentMethod,
           }
         : {
             amount: amountValue,
@@ -89,6 +91,7 @@ export default function SpendingForm({ user, onSpendingAdded }: SpendingFormProp
             userName: user.name,
             familyCode: user.familyCode,
             date: selectedDate,
+            paymentMethod,
           }
 
       console.log("[v0] API 요청 본문:", JSON.stringify(requestBody, null, 2))
@@ -253,6 +256,26 @@ export default function SpendingForm({ user, onSpendingAdded }: SpendingFormProp
               disabled={isLoading}
               className="bg-card border-border focus:border-primary transition-all duration-200"
             />
+          </div>
+
+          <div className="space-y-2">
+            <label className="block text-sm font-medium text-muted-foreground">결제 방법</label>
+            <div className="grid grid-cols-3 gap-2">
+              {PAYMENT_METHODS.map((method) => (
+                <Button
+                  key={method.value}
+                  type="button"
+                  variant={paymentMethod === method.value ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setPaymentMethod(method.value as PaymentMethod)}
+                  disabled={isLoading}
+                  className="flex items-center gap-2 h-10"
+                >
+                  <span className="text-lg">{method.icon}</span>
+                  <span className="text-sm">{method.label}</span>
+                </Button>
+              ))}
+            </div>
           </div>
 
           {!isRecurring && (

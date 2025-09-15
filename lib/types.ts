@@ -16,6 +16,7 @@ export interface Spending {
   date?: string // 날짜 필드 추가
   isRecurring?: boolean // 정기지출 여부
   recurringId?: string // 정기지출 그룹 ID
+  paymentMethod?: PaymentMethod // 결제 방법
 }
 
 export interface RecurringSpending {
@@ -29,6 +30,7 @@ export interface RecurringSpending {
   isActive: boolean // 활성화 상태
   createdAt: string
   lastProcessed?: string // 마지막 처리 날짜
+  paymentMethod?: PaymentMethod // 결제 방법
 }
 
 export interface Income {
@@ -167,6 +169,25 @@ export const INCOME_CATEGORIES = [
 export type IncomeCategory = (typeof INCOME_CATEGORIES)[number]
 
 export type Category = (typeof CATEGORIES)[number]
+
+// 결제 방법 타입 정의
+export type PaymentMethod = "card" | "cash" | "transfer"
+
+export const PAYMENT_METHODS = [
+  { value: "card", label: "카드", icon: "💳" },
+  { value: "cash", label: "현금", icon: "💵" },
+  { value: "transfer", label: "이체", icon: "🏦" },
+] as const
+
+export const getPaymentMethodLabel = (method: PaymentMethod): string => {
+  const found = PAYMENT_METHODS.find(m => m.value === method)
+  return found ? found.label : "미지정"
+}
+
+export const getPaymentMethodIcon = (method: PaymentMethod): string => {
+  const found = PAYMENT_METHODS.find(m => m.value === method)
+  return found ? found.icon : "❓"
+}
 
 export const getCategoryGroup = (category: string): string => {
   if (category.startsWith("식비")) return "식비"

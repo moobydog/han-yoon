@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Trash2 } from "lucide-react"
 import DeleteConfirmation from "@/components/delete-confirmation"
 import type { Spending, User } from "@/lib/types"
+import { getPaymentMethodIcon, getPaymentMethodLabel } from "@/lib/types"
 
 interface TodaySpendingListProps {
   user: User
@@ -163,7 +164,13 @@ export default function TodaySpendingList({ user, refreshTrigger, onSpendingDele
                     {/* 카테고리 - 1/3 */}
                     <div className="w-1/3 min-w-[250px] flex items-center gap-3 pr-4 border-r border-border">
                       <div className="w-3 h-3 bg-red-500 rounded-full flex-shrink-0"></div>
-                      <span className="text-sm font-medium text-foreground truncate">{record.category}</span>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-sm font-medium text-foreground truncate">{record.category}</span>
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <span>{getPaymentMethodIcon(record.paymentMethod || "card")}</span>
+                          <span>{getPaymentMethodLabel(record.paymentMethod || "card")}</span>
+                        </span>
+                      </div>
                     </div>
                     
                     {/* 사용자 - 1/6 */}

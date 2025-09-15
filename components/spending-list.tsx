@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Trash2 } from "lucide-react"
 import DeleteConfirmation from "@/components/delete-confirmation"
 import type { Spending } from "@/lib/types"
+import { getPaymentMethodIcon, getPaymentMethodLabel } from "@/lib/types"
 
 interface SpendingListProps {
   spendings: Spending[]
@@ -186,6 +187,10 @@ export default function SpendingList({ spendings, onRefresh }: SpendingListProps
                       <span className="font-medium text-gray-900">{formatAmount(spending.amount)}원</span>
                       <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
                         {spending.category}
+                      </span>
+                      <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded-full flex items-center gap-1">
+                        <span>{getPaymentMethodIcon(spending.paymentMethod || "card")}</span>
+                        <span>{getPaymentMethodLabel(spending.paymentMethod || "card")}</span>
                       </span>
                     </div>
                     {spending.memo && <div className="text-sm text-gray-600 mb-1">{spending.memo}</div>}

@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { amount, category, memo, userName, familyCode, date } = requestData
+    const { amount, category, memo, userName, familyCode, date, paymentMethod } = requestData
 
     // 입력값 검증
     if (!validateAmount(amount)) {
@@ -179,6 +179,7 @@ export async function POST(request: NextRequest) {
         userName: sanitizeString(userName),
         familyCode: sanitizeString(familyCode),
         date,
+        paymentMethod: paymentMethod || "card",
       })
 
       console.log("[v0] 지출 저장 성공:", sanitizeLogData({ id: spending.id, amount: spending.amount, clientIP }))
