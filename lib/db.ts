@@ -123,15 +123,18 @@ export async function addSpending(spending: Omit<Spending, "id" | "createdAt">):
       console.log("[v0] 기본 날짜 사용:", finalDate)
     }
     
-    const insertData = {
+    const insertData: any = {
       family_code: sanitizeString(spending.familyCode),
       amount: spending.amount,
       description: spending.memo ? sanitizeString(spending.memo) : "",
       category: sanitizeString(spending.category),
       date: finalDate, // YYYY-MM-DD format
       spender: sanitizeString(spending.userName),
-      // payment_method 컬럼이 없을 수 있으므로 일단 제외
-      // payment_method: spending.paymentMethod || "card",
+    }
+    
+    // payment_method 컬럼이 있는 경우에만 추가
+    if (spending.paymentMethod) {
+      insertData.payment_method = spending.paymentMethod
     }
     console.log("[v0] addSpending - 삽입할 데이터:", insertData)
     
@@ -341,6 +344,7 @@ export async function getRecurringSpending(): Promise<RecurringSpending[]> {
       isActive: row.is_active || true, // is_active 필드가 있으면 사용, 없으면 기본값
       createdAt: row.created_at,
       lastProcessed: row.last_processed, // last_processed 필드 추가
+      paymentMethod: (row.payment_method as any) || "card", // payment_method 필드 추가
     }))
 
     console.log("[v0] 정기지출 데이터 조회:", recurringSpending.length, "개")
@@ -366,7 +370,7 @@ export async function addRecurringSpending(
     // 가족 확인/생성 로직 단순화
     console.log("[v0] 가족 확인/생성 생략 - 직접 정기지출 저장 시도")
     
-    const insertData = {
+    const insertData: any = {
       family_code: recurring.familyCode,
       amount: recurring.amount,
       description: recurring.memo || "",
@@ -374,6 +378,11 @@ export async function addRecurringSpending(
       day_of_month: recurring.dayOfMonth,
       spender: recurring.userName,
       is_active: true, // 명시적으로 추가
+    }
+    
+    // payment_method 컬럼이 있는 경우에만 추가
+    if (recurring.paymentMethod) {
+      insertData.payment_method = recurring.paymentMethod
     }
     console.log("[v0] 정기지출 삽입 데이터:", insertData)
     
