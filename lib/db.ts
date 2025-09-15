@@ -34,7 +34,7 @@ export async function getSpendings(): Promise<Spending[]> {
       familyCode: row.family_code,
       createdAt: row.created_at,
       date: row.date,
-      paymentMethod: (row.payment_method as any) || "card",
+      paymentMethod: (row.payment_method && typeof row.payment_method === 'string') ? row.payment_method : "card",
     }))
 
     console.log("[v0] 지출 데이터 조회:", spendings.length, "개")
@@ -72,7 +72,7 @@ export async function getSpendingsByFamilyCodes(targetFamilyCodes: string[]): Pr
       familyCode: row.family_code,
       createdAt: row.created_at,
       date: row.date,
-      paymentMethod: (row.payment_method as any) || "card",
+      paymentMethod: (row.payment_method && typeof row.payment_method === 'string') ? row.payment_method : "card",
     }))
 
     console.log("[v0] 지출 데이터 조회 (DB 필터):", spendings.length, "개")
@@ -132,8 +132,8 @@ export async function addSpending(spending: Omit<Spending, "id" | "createdAt">):
       spender: sanitizeString(spending.userName),
     }
     
-    // payment_method 컬럼이 있는 경우에만 추가
-    if (spending.paymentMethod) {
+    // payment_method 컬럼이 있는 경우에만 추가 (안전한 처리)
+    if (spending.paymentMethod && typeof spending.paymentMethod === 'string') {
       insertData.payment_method = spending.paymentMethod
     }
     console.log("[v0] addSpending - 삽입할 데이터:", insertData)
@@ -344,7 +344,7 @@ export async function getRecurringSpending(): Promise<RecurringSpending[]> {
       isActive: row.is_active || true, // is_active 필드가 있으면 사용, 없으면 기본값
       createdAt: row.created_at,
       lastProcessed: row.last_processed, // last_processed 필드 추가
-      paymentMethod: (row.payment_method as any) || "card", // payment_method 필드 추가
+      paymentMethod: (row.payment_method && typeof row.payment_method === 'string') ? row.payment_method : "card", // payment_method 필드 추가
     }))
 
     console.log("[v0] 정기지출 데이터 조회:", recurringSpending.length, "개")
@@ -380,8 +380,8 @@ export async function addRecurringSpending(
       is_active: true, // 명시적으로 추가
     }
     
-    // payment_method 컬럼이 있는 경우에만 추가
-    if (recurring.paymentMethod) {
+    // payment_method 컬럼이 있는 경우에만 추가 (안전한 처리)
+    if (recurring.paymentMethod && typeof recurring.paymentMethod === 'string') {
       insertData.payment_method = recurring.paymentMethod
     }
     console.log("[v0] 정기지출 삽입 데이터:", insertData)

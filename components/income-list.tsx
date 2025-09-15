@@ -30,14 +30,23 @@ export default function IncomeList({ user, refreshTrigger, onDelete }: IncomeLis
     try {
       console.log("[v0] 수입 내역 로딩 시작")
       const response = await fetch(`/api/income?familyCodes=${user.familyCode}`)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const result = await response.json()
 
-      if (result.success) {
+      if (result.success && Array.isArray(result.data)) {
         console.log("[v0] 수입 내역:", result.data)
         setIncomes(result.data)
+      } else {
+        console.warn("[v0] 수입 내역 로딩 실패:", result.error)
+        setIncomes([])
       }
     } catch (error) {
       console.error("[v0] 수입 내역 로딩 에러:", error)
+      setIncomes([])
     } finally {
       setIsLoading(false)
     }

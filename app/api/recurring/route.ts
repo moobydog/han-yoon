@@ -18,7 +18,10 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       return NextResponse.json({ success: false, error: "잘못된 요청 형식입니다." })
     }
 
-    const { amount, category, memo, userName, familyCode, dayOfMonth } = body
+    const { amount, category, memo, userName, familyCode, dayOfMonth, paymentMethod } = body
+    
+    // paymentMethod 기본값 설정
+    const safePaymentMethod = (paymentMethod && typeof paymentMethod === 'string') ? paymentMethod : "card"
 
     if (!amount || !userName || !familyCode || !dayOfMonth) {
       return NextResponse.json({ success: false, error: "필수 필드가 누락되었습니다." })
@@ -48,6 +51,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
         category: finalCategory,
         date: new Date().toISOString().split('T')[0],
         spender: userName,
+        payment_method: safePaymentMethod,
       })
     })
 
@@ -71,6 +75,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
       dayOfMonth: Number(dayOfMonth),
       isActive: true,
       createdAt: data[0].created_at,
+      paymentMethod: safePaymentMethod,
     }
 
     console.log("[v0] 정기지출 저장 완료:", recurringSpending)

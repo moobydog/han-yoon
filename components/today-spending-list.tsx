@@ -31,9 +31,14 @@ export default function TodaySpendingList({ user, refreshTrigger, onSpendingDele
     try {
       console.log("[v0] 오늘 지출 내역 로딩 시작")
       const response = await fetch(`/api/spending?familyCodes=${user.familyCode}`)
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const result = await response.json()
 
-      if (result.success) {
+      if (result.success && Array.isArray(result.data)) {
         const today = new Date().toISOString().split("T")[0]
         const todayRecords = result.data.filter((record: Spending) => {
           const recordDate = record.date || record.createdAt
@@ -41,9 +46,13 @@ export default function TodaySpendingList({ user, refreshTrigger, onSpendingDele
         })
         console.log("[v0] 오늘 지출 내역:", todayRecords)
         setTodaySpending(todayRecords)
+      } else {
+        console.warn("[v0] 오늘 지출 내역 로딩 실패:", result.error)
+        setTodaySpending([])
       }
     } catch (error) {
       console.error("[v0] 오늘 지출 내역 로딩 에러:", error)
+      setTodaySpending([])
     } finally {
       setIsLoading(false)
     }

@@ -119,6 +119,9 @@ export async function POST(request: NextRequest) {
     }
 
     const { amount, category, memo, userName, familyCode, date, paymentMethod } = requestData
+    
+    // paymentMethod 기본값 설정
+    const safePaymentMethod = (paymentMethod && typeof paymentMethod === 'string') ? paymentMethod : "card"
 
     // 입력값 검증
     if (!validateAmount(amount)) {
@@ -179,7 +182,7 @@ export async function POST(request: NextRequest) {
         userName: sanitizeString(userName),
         familyCode: sanitizeString(familyCode),
         date,
-        paymentMethod: paymentMethod || "card",
+        paymentMethod: safePaymentMethod,
       })
 
       console.log("[v0] 지출 저장 성공:", sanitizeLogData({ id: spending.id, amount: spending.amount, clientIP }))
