@@ -420,10 +420,10 @@ export default function DashboardPage() {
                                 {'amount' in transaction ? '-' : '+'}{transaction.amount.toLocaleString()}원
                               </div>
                               <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="sm"
                                 onClick={() => handleDeleteClick(transaction)}
-                                className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 h-8 w-8 flex-shrink-0 border border-red-200"
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50 p-2 h-8 w-8 flex-shrink-0 border-red-300 bg-red-50"
                                 title="삭제하기"
                               >
                                 <Trash2 className="w-4 h-4" />

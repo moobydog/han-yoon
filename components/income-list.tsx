@@ -185,10 +185,10 @@ export default function IncomeList({ user, refreshTrigger, onDelete }: IncomeLis
                         +{income.amount.toLocaleString()}원
                       </div>
                       <Button
-                        variant="ghost"
+                        variant="outline"
                         size="sm"
                         onClick={() => handleDeleteClick(income)}
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 h-8 w-8 flex-shrink-0 border border-red-200 dark:border-red-800"
+                        className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 h-8 w-8 flex-shrink-0 border-red-300 bg-red-50 dark:bg-red-900/10"
                         title="삭제하기"
                       >
                         <Trash2 className="w-4 h-4" />
