@@ -10,7 +10,7 @@ UPDATE recurring_spending SET payment_method = 'card' WHERE payment_method IS NU
 
 -- 결제 방법 제약 조건 추가
 ALTER TABLE spending ADD CONSTRAINT check_payment_method 
-  CHECK (payment_method IN ('card', 'cash', 'transfer'));
+  CHECK (payment_method IN ('card', 'cash', 'transfer', 'other'));
 
 ALTER TABLE recurring_spending ADD CONSTRAINT check_payment_method 
-  CHECK (payment_method IN ('card', 'cash', 'transfer'));
+  CHECK (payment_method IN ('card', 'cash', 'transfer', 'other'));

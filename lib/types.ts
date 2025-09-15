@@ -171,12 +171,13 @@ export type IncomeCategory = (typeof INCOME_CATEGORIES)[number]
 export type Category = (typeof CATEGORIES)[number]
 
 // 결제 방법 타입 정의
-export type PaymentMethod = "card" | "cash" | "transfer"
+export type PaymentMethod = "card" | "cash" | "transfer" | "other"
 
 export const PAYMENT_METHODS = [
   { value: "card", label: "카드", icon: "💳" },
   { value: "cash", label: "현금", icon: "💵" },
   { value: "transfer", label: "이체", icon: "🏦" },
+  { value: "other", label: "기타", icon: "📝" },
 ] as const
 
 export const getPaymentMethodLabel = (method: PaymentMethod): string => {

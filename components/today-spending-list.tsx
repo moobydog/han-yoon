@@ -144,11 +144,11 @@ export default function TodaySpendingList({ user, refreshTrigger, onSpendingDele
           <div className="overflow-x-auto rounded-lg border border-border">
             {/* 헤더 */}
             <div className="bg-muted/50 px-6 py-4">
-              <div className="flex items-center text-sm font-medium text-muted-foreground min-w-[1000px]">
-                <div className="w-1/3 min-w-[250px] border-r border-border pr-4">카테고리</div>
-                <div className="w-1/6 min-w-[120px] border-r border-border px-4">사용자</div>
+              <div className="flex items-center text-sm font-medium text-muted-foreground min-w-[1200px]">
+                <div className="w-1/4 min-w-[200px] border-r border-border pr-4">카테고리</div>
+                <div className="w-1/6 min-w-[100px] border-r border-border px-4">사용자</div>
                 <div className="w-1/4 min-w-[200px] border-r border-border px-4">메모</div>
-                <div className="w-1/4 min-w-[300px] text-right pl-4">금액</div>
+                <div className="w-1/3 min-w-[250px] text-right pl-4">금액</div>
               </div>
             </div>
             
@@ -160,9 +160,9 @@ export default function TodaySpendingList({ user, refreshTrigger, onSpendingDele
                   className="px-6 py-4 hover:bg-muted/30 transition-colors duration-200 group"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div className="flex items-center min-w-[1000px]">
-                    {/* 카테고리 - 1/3 */}
-                    <div className="w-1/3 min-w-[250px] flex items-center gap-3 pr-4 border-r border-border">
+                  <div className="flex items-center min-w-[1200px]">
+                    {/* 카테고리 - 1/4 */}
+                    <div className="w-1/4 min-w-[200px] flex items-center gap-3 pr-4 border-r border-border">
                       <div className="w-3 h-3 bg-red-500 rounded-full flex-shrink-0"></div>
                       <div className="flex flex-col gap-1">
                         <span className="text-sm font-medium text-foreground truncate">{record.category}</span>
@@ -174,7 +174,7 @@ export default function TodaySpendingList({ user, refreshTrigger, onSpendingDele
                     </div>
                     
                     {/* 사용자 - 1/6 */}
-                    <div className="w-1/6 min-w-[120px] flex items-center px-4 border-r border-border">
+                    <div className="w-1/6 min-w-[100px] flex items-center px-4 border-r border-border">
                       <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full truncate">
                         {record.userName}
                       </span>
@@ -191,8 +191,8 @@ export default function TodaySpendingList({ user, refreshTrigger, onSpendingDele
                       )}
                     </div>
                     
-                    {/* 금액과 삭제 버튼 - 1/4 */}
-                    <div className="w-1/4 min-w-[300px] flex items-center justify-end gap-3 pl-4">
+                    {/* 금액과 삭제 버튼 - 1/3 */}
+                    <div className="w-1/3 min-w-[250px] flex items-center justify-end gap-3 pl-4">
                       <div className="font-bold text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded border border-red-200 dark:border-red-800 whitespace-nowrap">
                         -{record.amount.toLocaleString()}원
                       </div>
