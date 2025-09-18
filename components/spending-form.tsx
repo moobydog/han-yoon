@@ -136,80 +136,22 @@ export default function SpendingForm({ user, onSpendingAdded }: SpendingFormProp
       <CardContent className="space-y-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-3">
-            <label className="block text-sm font-medium text-muted-foreground">카테고리</label>
-            <Tabs defaultValue="식비" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 gap-1 mb-3 bg-muted/50 p-1">
-                <TabsTrigger
-                  value="식비"
-                  className="text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  🍽️ 식비
-                </TabsTrigger>
-                <TabsTrigger
-                  value="교통비"
-                  className="text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  🚗 교통
-                </TabsTrigger>
-                <TabsTrigger
-                  value="카페"
-                  className="text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  ☕ 카페
-                </TabsTrigger>
-              </TabsList>
-              <TabsList className="grid w-full grid-cols-3 gap-1 mb-3 bg-muted/50 p-1">
-                <TabsTrigger
-                  value="쇼핑"
-                  className="text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  🛍️ 쇼핑
-                </TabsTrigger>
-                <TabsTrigger
-                  value="생활용품"
-                  className="text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  🏠 생활
-                </TabsTrigger>
-                <TabsTrigger
-                  value="금융"
-                  className="text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  💳 금융
-                </TabsTrigger>
-              </TabsList>
-              <TabsList className="grid w-full grid-cols-3 gap-1 mb-4 bg-muted/50 p-1">
-                <TabsTrigger
-                  value="의료비"
-                  className="text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  🏥 의료
-                </TabsTrigger>
-                <TabsTrigger
-                  value="문화생활"
-                  className="text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  🎭 문화
-                </TabsTrigger>
-                <TabsTrigger
-                  value="기타"
-                  className="text-xs font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                >
-                  📦 기타
-                </TabsTrigger>
-              </TabsList>
-
+            <label className="block text-sm font-medium text-foreground">카테고리 선택</label>
+            <div className="grid grid-cols-2 gap-2">
               {Object.entries(categoryGroups).map(([group, categories]) => (
-                <TabsContent key={group} value={group} className="mt-0">
-                  <div className="grid grid-cols-2 gap-2">
+                <div key={group} className="space-y-2">
+                  <div className="text-xs font-medium text-muted-foreground px-2 py-1 bg-muted/50 rounded-md">
+                    {group}
+                  </div>
+                  <div className="grid grid-cols-1 gap-1">
                     {categories.map((cat) => (
                       <Button
                         key={cat}
                         type="button"
                         variant={category === cat ? "default" : "outline"}
-                        className={`text-xs p-3 h-auto whitespace-normal text-left justify-start transition-all duration-200 hover:scale-105 ${
+                        className={`text-xs p-2 h-8 text-left justify-start transition-all duration-200 ${
                           category === cat
-                            ? "bg-primary text-primary-foreground shadow-md"
+                            ? "bg-primary text-primary-foreground shadow-sm"
                             : "bg-card hover:bg-accent hover:text-accent-foreground border-border"
                         }`}
                         onClick={() => {
@@ -222,28 +164,34 @@ export default function SpendingForm({ user, onSpendingAdded }: SpendingFormProp
                       </Button>
                     ))}
                   </div>
-                </TabsContent>
+                </div>
               ))}
-            </Tabs>
+            </div>
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-muted-foreground">금액</label>
+            <label className="block text-sm font-medium text-foreground">금액</label>
             <div className="relative">
               <Input
-                type="number"
+                type="text"
                 placeholder="0"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/[^0-9]/g, '')
+                  setAmount(value)
+                }}
                 className="text-right text-2xl font-bold h-16 pr-12 bg-card border-2 focus:border-primary transition-all duration-200"
                 disabled={isLoading}
-                min="0"
-                step="10"
               />
               <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-lg font-medium text-muted-foreground">
                 원
               </span>
             </div>
+            {amount && (
+              <div className="text-sm text-muted-foreground text-center">
+                {Number(amount).toLocaleString()}원
+              </div>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -259,8 +207,8 @@ export default function SpendingForm({ user, onSpendingAdded }: SpendingFormProp
           </div>
 
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-muted-foreground">결제 방법</label>
-            <div className="grid grid-cols-4 gap-2">
+            <label className="block text-sm font-medium text-foreground">결제 방법</label>
+            <div className="grid grid-cols-2 gap-2">
               {PAYMENT_METHODS.map((method) => (
                 <Button
                   key={method.value}
@@ -269,10 +217,14 @@ export default function SpendingForm({ user, onSpendingAdded }: SpendingFormProp
                   size="sm"
                   onClick={() => setPaymentMethod(method.value as PaymentMethod)}
                   disabled={isLoading}
-                  className="flex items-center gap-2 h-10"
+                  className={`flex items-center gap-2 h-12 transition-all duration-200 ${
+                    paymentMethod === method.value
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-card hover:bg-accent hover:text-accent-foreground"
+                  }`}
                 >
                   <span className="text-lg">{method.icon}</span>
-                  <span className="text-sm">{method.label}</span>
+                  <span className="text-sm font-medium">{method.label}</span>
                 </Button>
               ))}
             </div>
@@ -330,19 +282,7 @@ export default function SpendingForm({ user, onSpendingAdded }: SpendingFormProp
               console.log("[v0] 버튼 클릭 시 상태:", { amount, category, isRecurring, dayOfMonth })
             }}
             className="w-full text-lg py-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-            disabled={(() => {
-              // 최후의 수단: 버튼 활성화 조건 완전 제거 (임시)
-              const disabled = isLoading || !amount.trim()
-              console.log("[v0] 버튼 활성화 상태 (단순화):", {
-                isLoading,
-                amount: amount.trim(),
-                category,
-                isRecurring,
-                dayOfMonth,
-                disabled
-              })
-              return disabled
-            })()}
+            disabled={isLoading || !amount.trim()}
           >
             {isLoading ? (
               <div className="flex items-center gap-2">
@@ -350,7 +290,10 @@ export default function SpendingForm({ user, onSpendingAdded }: SpendingFormProp
                 저장 중...
               </div>
             ) : (
-              <span>{isRecurring ? "정기지출 등록" : "저장하기"}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">{isRecurring ? "🔄" : "💾"}</span>
+                <span>{isRecurring ? "정기지출 등록" : "저장하기"}</span>
+              </div>
             )}
           </Button>
         </form>

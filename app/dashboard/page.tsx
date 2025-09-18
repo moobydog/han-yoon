@@ -258,56 +258,59 @@ export default function DashboardPage() {
           ) : (
             <>
               {/* 요약 통계 */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <Card className="card-spending animate-slide-up hover-lift" style={{ animationDelay: "0.1s" }}>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <Card className="card-spending animate-slide-up hover-lift border-l-4 border-l-red-500" style={{ animationDelay: "0.1s" }}>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
-                      <span className="text-lg">💸</span>
+                      <span className="text-xl">💸</span>
                       총 지출
                     </CardTitle>
-                    <TrendingDown className="h-4 w-4 text-red-500" />
+                    <TrendingDown className="h-5 w-5 text-red-500" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-red-600">
+                    <div className="text-3xl font-bold text-red-600 mb-1">
                       {totalSpending.toLocaleString()}원
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      <span className="w-2 h-2 bg-red-500 rounded-full"></span>
                       {spendings.length}건의 거래
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="card-income animate-slide-up hover-lift" style={{ animationDelay: "0.2s" }}>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className="card-income animate-slide-up hover-lift border-l-4 border-l-green-500" style={{ animationDelay: "0.2s" }}>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
-                      <span className="text-lg">💰</span>
+                      <span className="text-xl">💰</span>
                       총 수입
                     </CardTitle>
-                    <TrendingUp className="h-4 w-4 text-green-500" />
+                    <TrendingUp className="h-5 w-5 text-green-500" />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-3xl font-bold text-green-600 mb-1">
                       {totalIncome.toLocaleString()}원
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                       {incomes.length}건의 거래
                     </p>
                   </CardContent>
                 </Card>
 
-                <Card className="card-dashboard animate-slide-up hover-lift" style={{ animationDelay: "0.3s" }}>
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <Card className={`card-dashboard animate-slide-up hover-lift border-l-4 ${netAmount >= 0 ? 'border-l-green-500' : 'border-l-red-500'}`} style={{ animationDelay: "0.3s" }}>
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                     <CardTitle className="text-sm font-medium flex items-center gap-2">
-                      <span className="text-lg">📊</span>
+                      <span className="text-xl">📊</span>
                       순수익
                     </CardTitle>
-                    <DollarSign className="h-4 w-4 text-blue-500" />
+                    <DollarSign className={`h-5 w-5 ${netAmount >= 0 ? 'text-green-500' : 'text-red-500'}`} />
                   </CardHeader>
                   <CardContent>
-                    <div className={`text-2xl font-bold ${netAmount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    <div className={`text-3xl font-bold mb-1 ${netAmount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                       {netAmount >= 0 ? '+' : ''}{netAmount.toLocaleString()}원
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-sm text-muted-foreground flex items-center gap-1">
+                      <span className={`w-2 h-2 rounded-full ${netAmount >= 0 ? 'bg-green-500' : 'bg-red-500'}`}></span>
                       {netAmount >= 0 ? '흑자' : '적자'}
                     </p>
                   </CardContent>
@@ -317,60 +320,96 @@ export default function DashboardPage() {
               {/* 카테고리별 분석 */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* 지출 카테고리 */}
-                <Card className="animate-slide-up" style={{ animationDelay: "0.4s" }}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <span className="text-red-500">💸</span>
+                <Card className="animate-slide-up border-l-4 border-l-red-500" style={{ animationDelay: "0.4s" }}>
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <span className="text-2xl">💸</span>
                       지출 카테고리별
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     {Object.keys(spendingByCategory).length === 0 ? (
                       <div className="text-center py-8 text-muted-foreground">
-                        이번 달 지출이 없습니다
+                        <div className="text-4xl mb-3">📊</div>
+                        <div>이번 달 지출이 없습니다</div>
                       </div>
                     ) : (
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         {Object.entries(spendingByCategory)
                           .sort(([,a], [,b]) => b - a)
-                          .map(([category, amount]) => (
-                            <div key={category} className="flex items-center justify-between">
-                              <span className="text-sm font-medium">{category}</span>
-                              <span className="text-sm text-red-600 font-semibold">
-                                {amount.toLocaleString()}원
-                              </span>
-                            </div>
-                          ))}
+                          .map(([category, amount], index) => {
+                            const percentage = (amount / totalSpending) * 100
+                            return (
+                              <div key={category} className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium text-foreground">{category}</span>
+                                  <span className="text-sm text-red-600 font-semibold">
+                                    {amount.toLocaleString()}원
+                                  </span>
+                                </div>
+                                <div className="w-full bg-muted rounded-full h-2">
+                                  <div 
+                                    className="bg-red-500 h-2 rounded-full transition-all duration-500"
+                                    style={{ 
+                                      width: `${percentage}%`,
+                                      animationDelay: `${index * 0.1}s`
+                                    }}
+                                  ></div>
+                                </div>
+                                <div className="text-xs text-muted-foreground text-right">
+                                  {percentage.toFixed(1)}%
+                                </div>
+                              </div>
+                            )
+                          })}
                       </div>
                     )}
                   </CardContent>
                 </Card>
 
                 {/* 수입 카테고리 */}
-                <Card className="animate-slide-up" style={{ animationDelay: "0.5s" }}>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <span className="text-green-500">💰</span>
+                <Card className="animate-slide-up border-l-4 border-l-green-500" style={{ animationDelay: "0.5s" }}>
+                  <CardHeader className="pb-4">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <span className="text-2xl">💰</span>
                       수입 카테고리별
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     {Object.keys(incomeByCategory).length === 0 ? (
                       <div className="text-center py-8 text-muted-foreground">
-                        이번 달 수입이 없습니다
+                        <div className="text-4xl mb-3">📊</div>
+                        <div>이번 달 수입이 없습니다</div>
                       </div>
                     ) : (
-                      <div className="space-y-3">
+                      <div className="space-y-4">
                         {Object.entries(incomeByCategory)
                           .sort(([,a], [,b]) => b - a)
-                          .map(([category, amount]) => (
-                            <div key={category} className="flex items-center justify-between">
-                              <span className="text-sm font-medium">{category}</span>
-                              <span className="text-sm text-green-600 font-semibold">
-                                {amount.toLocaleString()}원
-                              </span>
-                            </div>
-                          ))}
+                          .map(([category, amount], index) => {
+                            const percentage = totalIncome > 0 ? (amount / totalIncome) * 100 : 0
+                            return (
+                              <div key={category} className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-sm font-medium text-foreground">{category}</span>
+                                  <span className="text-sm text-green-600 font-semibold">
+                                    {amount.toLocaleString()}원
+                                  </span>
+                                </div>
+                                <div className="w-full bg-muted rounded-full h-2">
+                                  <div 
+                                    className="bg-green-500 h-2 rounded-full transition-all duration-500"
+                                    style={{ 
+                                      width: `${percentage}%`,
+                                      animationDelay: `${index * 0.1}s`
+                                    }}
+                                  ></div>
+                                </div>
+                                <div className="text-xs text-muted-foreground text-right">
+                                  {percentage.toFixed(1)}%
+                                </div>
+                              </div>
+                            )
+                          })}
                       </div>
                     )}
                   </CardContent>
@@ -378,14 +417,18 @@ export default function DashboardPage() {
               </div>
 
               {/* 최근 거래 내역 */}
-              <Card className="mt-6 animate-slide-up" style={{ animationDelay: "0.6s" }}>
-                <CardHeader>
-                  <CardTitle>최근 거래 내역</CardTitle>
+              <Card className="mt-6 animate-slide-up border-l-4 border-l-blue-500" style={{ animationDelay: "0.6s" }}>
+                <CardHeader className="pb-4">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <span className="text-2xl">📋</span>
+                    최근 거래 내역
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   {spendings.length === 0 && incomes.length === 0 ? (
                     <div className="text-center py-8 text-muted-foreground">
-                      이번 달 거래 내역이 없습니다
+                      <div className="text-4xl mb-3">📊</div>
+                      <div>이번 달 거래 내역이 없습니다</div>
                     </div>
                   ) : (
                     <div className="space-y-3">
@@ -399,35 +442,42 @@ export default function DashboardPage() {
                         .map((transaction, index) => (
                           <div
                             key={`${'amount' in transaction ? 'spending' : 'income'}-${transaction.id}`}
-                            className="flex items-center justify-between p-3 bg-muted/30 rounded-lg"
+                            className="bg-card border border-border rounded-lg p-4 hover:shadow-md transition-all duration-200"
+                            style={{ animationDelay: `${index * 0.1}s` }}
                           >
-                            <div className="flex items-center gap-3 flex-1">
-                              <div className={`w-2 h-2 rounded-full ${
-                                'amount' in transaction ? 'bg-red-500' : 'bg-green-500'
-                              }`} />
-                              <div className="flex-1">
-                                <div className="font-medium">{transaction.category}</div>
-                                <div className="text-sm text-muted-foreground">
-                                  {transaction.memo && `${transaction.memo} • `}
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <div className={`w-3 h-3 rounded-full ${
+                                    'amount' in transaction ? 'bg-red-500' : 'bg-green-500'
+                                  }`} />
+                                  <div className="font-medium text-foreground">{transaction.category}</div>
+                                </div>
+                                {transaction.memo && (
+                                  <div className="text-sm text-muted-foreground mb-1">
+                                    {transaction.memo}
+                                  </div>
+                                )}
+                                <div className="text-xs text-muted-foreground">
                                   {new Date(transaction.date || transaction.createdAt).toLocaleDateString("ko-KR")}
                                 </div>
                               </div>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <div className={`font-semibold ${
-                                'amount' in transaction ? 'text-red-600' : 'text-green-600'
-                              }`}>
-                                {'amount' in transaction ? '-' : '+'}{transaction.amount.toLocaleString()}원
+                              <div className="flex items-center gap-2 flex-shrink-0">
+                                <div className={`text-right font-bold text-lg ${
+                                  'amount' in transaction ? 'text-red-600' : 'text-green-600'
+                                }`}>
+                                  {'amount' in transaction ? '-' : '+'}{transaction.amount.toLocaleString()}원
+                                </div>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleDeleteClick(transaction)}
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50 p-2 h-8 w-8 border-red-300 bg-red-50"
+                                  title="삭제하기"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
                               </div>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleDeleteClick(transaction)}
-                                className="text-red-600 hover:text-red-700 hover:bg-red-50 p-2 h-8 w-8 flex-shrink-0 border-red-300 bg-red-50"
-                                title="삭제하기"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
                             </div>
                           </div>
                         ))}

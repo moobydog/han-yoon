@@ -150,75 +150,60 @@ export default function TodaySpendingList({ user, refreshTrigger, onSpendingDele
             <div className="text-xs text-muted-foreground mt-1">첫 지출을 등록해보세요!</div>
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-border">
-            {/* 헤더 */}
-            <div className="bg-muted/50 px-6 py-4">
-              <div className="flex items-center text-sm font-medium text-muted-foreground min-w-[1200px]">
-                <div className="w-1/4 min-w-[200px] border-r border-border pr-4">카테고리</div>
-                <div className="w-1/6 min-w-[100px] border-r border-border px-4">사용자</div>
-                <div className="w-1/4 min-w-[200px] border-r border-border px-4">메모</div>
-                <div className="w-1/3 min-w-[250px] text-right pl-4">금액</div>
-              </div>
-            </div>
-            
-            {/* 데이터 행들 */}
-            <div className="divide-y divide-border">
-              {todaySpending.map((record, index) => (
-                <div
-                  key={record.id}
-                  className="px-6 py-4 hover:bg-muted/30 transition-colors duration-200 group"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div className="flex items-center min-w-[1200px]">
-                    {/* 카테고리 - 1/4 */}
-                    <div className="w-1/4 min-w-[200px] flex items-center gap-3 pr-4 border-r border-border">
-                      <div className="w-3 h-3 bg-red-500 rounded-full flex-shrink-0"></div>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-sm font-medium text-foreground truncate">{record.category}</span>
-                        <span className="text-xs text-muted-foreground flex items-center gap-1">
-                          <span>{getPaymentMethodIcon(record.paymentMethod || "card")}</span>
-                          <span>{getPaymentMethodLabel(record.paymentMethod || "card")}</span>
-                        </span>
-                      </div>
-                    </div>
-                    
-                    {/* 사용자 - 1/6 */}
-                    <div className="w-1/6 min-w-[100px] flex items-center px-4 border-r border-border">
-                      <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full truncate">
-                        {record.userName}
+          <div className="space-y-3">
+            {todaySpending.map((record, index) => (
+              <div
+                key={record.id}
+                className="bg-card border border-border rounded-lg p-4 hover:shadow-md transition-all duration-200 group"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  {/* 왼쪽: 카테고리와 메모 */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
+                      <span className="text-sm font-medium text-foreground truncate">
+                        {record.category}
+                      </span>
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <span>{getPaymentMethodIcon(record.paymentMethod || "card")}</span>
+                        <span>{getPaymentMethodLabel(record.paymentMethod || "card")}</span>
                       </span>
                     </div>
                     
-                    {/* 메모 - 1/4 */}
-                    <div className="w-1/4 min-w-[200px] flex items-center px-4 border-r border-border">
-                      {record.memo ? (
-                        <span className="text-sm text-muted-foreground truncate">
-                          {record.memo}
-                        </span>
-                      ) : (
-                        <span className="text-xs text-muted-foreground/50">-</span>
-                      )}
-                    </div>
-                    
-                    {/* 금액과 삭제 버튼 - 1/3 */}
-                    <div className="w-1/3 min-w-[250px] flex items-center justify-end gap-3 pl-4">
-                      <div className="font-bold text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded border border-red-200 dark:border-red-800 whitespace-nowrap">
-                        -{record.amount.toLocaleString()}원
+                    {record.memo && (
+                      <div className="text-sm text-muted-foreground truncate mb-1">
+                        {record.memo}
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDeleteClick(record)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 h-8 w-8 flex-shrink-0 border-red-300 bg-red-50 dark:bg-red-900/10"
-                        title="삭제하기"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                    )}
+                    
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full">
+                        {record.userName}
+                      </span>
                     </div>
                   </div>
+                  
+                  {/* 오른쪽: 금액과 삭제 버튼 */}
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <div className="text-right">
+                      <div className="font-bold text-lg text-red-600 dark:text-red-400">
+                        -{record.amount.toLocaleString()}원
+                      </div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDeleteClick(record)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 h-8 w-8 border-red-300 bg-red-50 dark:bg-red-900/10"
+                      title="삭제하기"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         )}
       </CardContent>
