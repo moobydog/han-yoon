@@ -29,19 +29,7 @@ export default function LoginPage() {
 
       if (!response.ok) {
         console.error("[v0] HTTP 에러:", response.status, response.statusText)
-        
-        // 에러 응답에서 상세 메시지 가져오기
-        let errorMessage = `서버 오류가 발생했습니다 (${response.status})`
-        try {
-          const errorData = await response.json()
-          if (errorData.error) {
-            errorMessage = errorData.error
-          }
-        } catch (e) {
-          // JSON 파싱 실패 시 기본 메시지 사용
-        }
-        
-        alert(errorMessage)
+        alert(`서버 오류가 발생했습니다 (${response.status})`)
         return
       }
 
@@ -88,15 +76,12 @@ export default function LoginPage() {
             <div>
               <Input
                 type="text"
-                placeholder="가족코드 (영문+숫자 3-20자)"
+                placeholder="가족코드 (예: FAMILY2025)"
                 value={familyCode}
                 onChange={(e) => setFamilyCode(e.target.value)}
                 className="text-center text-lg"
                 disabled={isLoading}
               />
-              <p className="text-xs text-muted-foreground mt-1 text-center">
-                예: FAMILY2025, HOME123, MYFAMILY
-              </p>
             </div>
             <div>
               <Input
@@ -118,8 +103,7 @@ export default function LoginPage() {
           </form>
           <div className="mt-6 text-sm text-muted-foreground text-center">
             <p>💡 처음 사용하시나요?</p>
-            <p>영문+숫자로 된 새로운 가족코드를 입력하면 자동으로 생성됩니다</p>
-            <p className="text-xs mt-1">가족코드는 3-20자 영문과 숫자만 사용 가능합니다</p>
+            <p>새로운 가족코드를 입력하면 자동으로 생성됩니다</p>
           </div>
         </CardContent>
       </Card>

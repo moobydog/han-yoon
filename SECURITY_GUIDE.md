@@ -4,7 +4,7 @@
 
 `.env.local` 파일에 다음 설정을 추가하세요:
 
-```bash
+\`\`\`bash
 # Supabase 설정
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
@@ -21,7 +21,7 @@ API_TIMEOUT=30000
 # 로깅 설정
 LOG_LEVEL=warn
 ENABLE_AUDIT_LOG=true
-```
+\`\`\`
 
 ## 2. 데이터베이스 보안 설정
 
@@ -66,7 +66,7 @@ ENABLE_AUDIT_LOG=true
 ## 5. 보안 모니터링
 
 ### 감사 로그 확인
-```sql
+\`\`\`sql
 -- 최근 변경사항 확인
 SELECT * FROM audit_log 
 ORDER BY created_at DESC 
@@ -76,10 +76,10 @@ LIMIT 100;
 SELECT * FROM audit_log 
 WHERE family_code = '850324' 
 ORDER BY created_at DESC;
-```
+\`\`\`
 
 ### 의심스러운 활동 감지
-```sql
+\`\`\`sql
 -- 대량 삭제 시도 감지
 SELECT * FROM audit_log 
 WHERE operation = 'DELETE' 
@@ -89,12 +89,12 @@ AND created_at > NOW() - INTERVAL '1 hour';
 SELECT * FROM spending 
 WHERE amount > 10000000 
 ORDER BY created_at DESC;
-```
+\`\`\`
 
 ## 6. 응급 상황 대응
 
 ### 데이터 복구
-```sql
+\`\`\`sql
 -- 삭제된 데이터 복구 (감사 로그에서)
 INSERT INTO spending (family_code, amount, description, category, date, spender)
 SELECT 
@@ -108,13 +108,13 @@ FROM audit_log
 WHERE table_name = 'spending' 
 AND operation = 'DELETE' 
 AND id = [삭제된_레코드_ID];
-```
+\`\`\`
 
 ### 보안 정책 재설정
-```sql
+\`\`\`sql
 -- 모든 RLS 정책 재활성화
 ALTER TABLE families ENABLE ROW LEVEL SECURITY;
 ALTER TABLE spending ENABLE ROW LEVEL SECURITY;
 ALTER TABLE income ENABLE ROW LEVEL SECURITY;
 ALTER TABLE recurring_spending ENABLE ROW LEVEL SECURITY;
-```
+\`\`\`

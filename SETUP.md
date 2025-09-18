@@ -9,9 +9,9 @@
 ## 🔧 단계별 설정
 
 ### 1단계: 의존성 설치
-```bash
+\`\`\`bash
 pnpm install
-```
+\`\`\`
 
 ### 2단계: Supabase 프로젝트 생성
 
@@ -32,14 +32,14 @@ pnpm install
 
 프로젝트 루트에 `.env.local` 파일 생성:
 
-```bash
+\`\`\`bash
 # Supabase 설정
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 
 # 개발 환경 설정
 NODE_ENV=development
-```
+\`\`\`
 
 **Supabase URL과 API 키 찾는 방법:**
 1. Supabase 대시보드 → Settings → API
@@ -48,9 +48,9 @@ NODE_ENV=development
 
 ### 5단계: 개발 서버 실행
 
-```bash
+\`\`\`bash
 pnpm dev
-```
+\`\`\`
 
 브라우저에서 http://localhost:3000 접속
 
@@ -119,11 +119,11 @@ pnpm dev
 3. 자동 배포 활성화
 
 ### 환경 변수 (프로덕션)
-```
+\`\`\`
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 NODE_ENV=production
-```
+\`\`\`
 
 ## 📞 지원
 

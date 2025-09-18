@@ -4,11 +4,11 @@
 
 ### 1. 환경 변수 설정
 프로젝트 루트에 `.env.local` 파일 생성:
-```bash
+\`\`\`bash
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 NODE_ENV=development
-```
+\`\`\`
 
 ### 2. Supabase 프로젝트 설정
 1. [Supabase](https://supabase.com)에서 새 프로젝트 생성
@@ -18,10 +18,10 @@ NODE_ENV=development
 ## 🚀 테스트 실행
 
 ### 1단계: 개발 서버 실행
-```bash
+\`\`\`bash
 pnpm install
 pnpm dev
-```
+\`\`\`
 
 ### 2단계: 브라우저 테스트
 http://localhost:3000 접속
@@ -201,11 +201,11 @@ http://localhost:3000 접속
 4. 프로덕션 환경에서 기능 테스트
 
 ### B. 환경 변수 (프로덕션)
-```bash
+\`\`\`bash
 NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 NODE_ENV=production
-```
+\`\`\`
 
 ## 📞 지원 및 문의
 
