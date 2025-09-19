@@ -4,13 +4,9 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import type { User } from "@/lib/types"
 import SpendingForm from "@/components/spending-form"
-import IncomeForm from "@/components/income-form"
 import Navigation from "@/components/navigation"
 import TodaySpendingList from "@/components/today-spending-list"
-import IncomeList from "@/components/income-list"
 import RecurringProcessor from "@/components/recurring-processor"
-import ThemeToggle from "@/components/theme-toggle"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function HomePage() {
   const [user, setUser] = useState<User | null>(null)
@@ -27,10 +23,6 @@ export default function HomePage() {
   }, [router])
 
   const handleSpendingAdded = () => {
-    setRefreshTrigger((prev) => prev + 1)
-  }
-
-  const handleIncomeAdded = () => {
     setRefreshTrigger((prev) => prev + 1)
   }
 
@@ -51,57 +43,28 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <ThemeToggle />
       <RecurringProcessor user={user} onProcessComplete={handleRecurringProcessed} />
       <Navigation user={user} />
 
-      <main className="container mx-auto px-6 py-6 pb-20 max-w-[1400px]">
-        <div className="max-w-6xl mx-auto">
+      <main className="container mx-auto px-4 py-6 pb-20">
+        <div className="max-w-md mx-auto">
           {/* 헤더 섹션 */}
           <div className="text-center mb-8 animate-fade-in">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-accent rounded-full mb-4 shadow-lg">
               <span className="text-2xl">💰</span>
             </div>
             <h1 className="text-2xl font-bold text-foreground mb-2 font-space-grotesk">안녕하세요, {user.name}님!</h1>
-            <p className="text-muted-foreground">지출과 수입을 간편하게 기록해보세요</p>
+            <p className="text-muted-foreground">오늘의 지출을 간편하게 기록해보세요</p>
           </div>
 
-          {/* 탭으로 지출/수입 구분 */}
+          {/* 지출 입력 폼 */}
           <div className="animate-slide-up">
-            <Tabs defaultValue="spending" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="spending">지출</TabsTrigger>
-                <TabsTrigger value="income">수입</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="spending" className="space-y-6">
-                {/* 지출 입력 폼 */}
-                <SpendingForm user={user} onSpendingAdded={handleSpendingAdded} />
-                
-                {/* 오늘의 지출 내역 */}
-                <TodaySpendingList 
-                  user={user} 
-                  refreshTrigger={refreshTrigger} 
-                  onSpendingDeleted={handleSpendingAdded}
-                />
-              </TabsContent>
-              
-              <TabsContent value="income" className="space-y-6">
-                {/* 수입 입력 폼 */}
-                <IncomeForm 
-                  familyCode={user.familyCode} 
-                  userName={user.name} 
-                  onSuccess={handleIncomeAdded} 
-                />
-                
-                {/* 수입 내역 */}
-                <IncomeList 
-                  user={user} 
-                  refreshTrigger={refreshTrigger} 
-                  onDelete={handleIncomeAdded}
-                />
-              </TabsContent>
-            </Tabs>
+            <SpendingForm user={user} onSpendingAdded={handleSpendingAdded} />
+          </div>
+
+          {/* 오늘의 지출 내역 */}
+          <div className="animate-slide-up" style={{ animationDelay: "0.1s" }}>
+            <TodaySpendingList user={user} refreshTrigger={refreshTrigger} />
           </div>
         </div>
       </main>

@@ -1,82 +1,118 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  /* 라이트 모드 - 개선된 색상 시스템 */
-  --background: 0 0% 100%;
-  --foreground: 222.2 84% 4.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 222.2 84% 4.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222.2 84% 4.9%;
-  --primary: 262.1 83.3% 57.8%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 222.2 84% 4.9%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215.4 16.3% 46.9%;
-  --accent: 20.5 90.2% 48.2%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 214.3 31.8% 91.4%;
-  --input: 214.3 31.8% 91.4%;
-  --ring: 262.1 83.3% 57.8%;
-  --chart-1: 262.1 83.3% 57.8%;
-  --chart-2: 20.5 90.2% 48.2%;
-  --chart-3: 142.1 76.2% 36.3%;
-  --chart-4: 47.9 95.8% 53.1%;
-  --chart-5: 346.8 77.2% 49.8%;
+  /* 디자인 브리프에 따른 새로운 컬러 토큰 적용 */
+  --background: #ffffff;
+  --foreground: #1f2937;
+  --card: #f1f5f9;
+  --card-foreground: #1f2937;
+  --popover: #ffffff;
+  --popover-foreground: #1f2937;
+  --primary: #8b5cf6;
+  --primary-foreground: #ffffff;
+  --secondary: #6b7280;
+  --secondary-foreground: #ffffff;
+  --muted: #ecfeff;
+  --muted-foreground: #475569;
+  --accent: #ea580c;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e5e7eb;
+  --input: #f1f5f9;
+  --ring: #8b5cf6;
+  --chart-1: #8b5cf6;
+  --chart-2: #ea580c;
+  --chart-3: #1f2937;
+  --chart-4: #6b7280;
+  --chart-5: #f97316;
   --radius: 0.5rem;
-  
-  /* 카드별 구분 색상 */
-  --card-spending: 0 0% 98%;
-  --card-income: 142.1 76.2% 36.3%;
-  --card-income-bg: 142.1 76.2% 95%;
-  --card-dashboard: 262.1 83.3% 57.8%;
-  --card-dashboard-bg: 262.1 83.3% 95%;
-  --card-form: 20.5 90.2% 48.2%;
-  --card-form-bg: 20.5 90.2% 95%;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1f2937;
+  --sidebar-primary: #8b5cf6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ea580c;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #e5e7eb;
+  --sidebar-ring: #8b5cf6;
 }
 
 .dark {
-  /* 다크 모드 - 개선된 색상 시스템 */
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 262.1 83.3% 57.8%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 262.1 83.3% 57.8%;
-  --chart-1: 262.1 83.3% 57.8%;
-  --chart-2: 20.5 90.2% 48.2%;
-  --chart-3: 142.1 76.2% 36.3%;
-  --chart-4: 47.9 95.8% 53.1%;
-  --chart-5: 346.8 77.2% 49.8%;
-  
-  /* 다크모드 카드별 구분 색상 */
-  --card-spending: 222.2 84% 6%;
-  --card-income: 142.1 76.2% 20%;
-  --card-income-bg: 142.1 76.2% 10%;
-  --card-dashboard: 262.1 83.3% 20%;
-  --card-dashboard-bg: 262.1 83.3% 10%;
-  --card-form: 20.5 90.2% 20%;
-  --card-form-bg: 20.5 90.2% 10%;
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+  --popover: #1e293b;
+  --popover-foreground: #f1f5f9;
+  --primary: #a855f7;
+  --primary-foreground: #ffffff;
+  --secondary: #475569;
+  --secondary-foreground: #f1f5f9;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #f97316;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #334155;
+  --input: #1e293b;
+  --ring: #a855f7;
+  --chart-1: #a855f7;
+  --chart-2: #f97316;
+  --chart-3: #f1f5f9;
+  --chart-4: #94a3b8;
+  --chart-5: #ea580c;
+  --sidebar: #0f172a;
+  --sidebar-foreground: #f1f5f9;
+  --sidebar-primary: #a855f7;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f97316;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #334155;
+  --sidebar-ring: #a855f7;
 }
 
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
 
 @layer base {
   * {
@@ -87,7 +123,7 @@
   }
 }
 
-/* 개선된 유틸리티 클래스 */
+/* 부드러운 애니메이션과 모바일 최적화 스타일 추가 */
 @layer utilities {
   .animate-fade-in {
     animation: fadeIn 0.3s ease-in-out;
@@ -101,89 +137,15 @@
     animation: bounceIn 0.5s ease-out;
   }
 
-  .animate-scale-in {
-    animation: scaleIn 0.2s ease-out;
-  }
-
-  /* 카드별 구분 스타일 */
-  .card-spending {
-    background: hsl(var(--card-spending));
-    border-left: 4px solid hsl(var(--destructive));
-  }
-
-  .card-income {
-    background: hsl(var(--card-income-bg));
-    border-left: 4px solid hsl(var(--card-income));
-  }
-
-  .card-dashboard {
-    background: hsl(var(--card-dashboard-bg));
-    border-left: 4px solid hsl(var(--card-dashboard));
-  }
-
-  .card-form {
-    background: hsl(var(--card-form-bg));
-    border-left: 4px solid hsl(var(--card-form));
-  }
-
-  /* 개선된 글래스 효과 */
   .glass-effect {
-    backdrop-filter: blur(16px);
-    background: hsl(var(--card) / 0.8);
-    border: 1px solid hsl(var(--border) / 0.5);
-    box-shadow: 0 8px 32px hsl(var(--foreground) / 0.1);
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .dark .glass-effect {
-    background: hsl(var(--card) / 0.9);
-    border: 1px solid hsl(var(--border) / 0.3);
-    box-shadow: 0 8px 32px hsl(var(--foreground) / 0.2);
-  }
-
-  /* 개선된 호버 효과 */
-  .hover-lift {
-    transition: all 0.2s ease-in-out;
-  }
-
-  .hover-lift:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px hsl(var(--foreground) / 0.15);
-  }
-
-  /* 포커스 링 개선 */
-  .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2;
-  }
-
-  /* 텍스트 그라데이션 */
-  .text-gradient {
-    background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* 개선된 스크롤바 */
-  .scrollbar-thin {
-    scrollbar-width: thin;
-    scrollbar-color: hsl(var(--muted-foreground)) transparent;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground) / 0.3);
-    border-radius: 3px;
-  }
-
-  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground) / 0.5);
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(51, 65, 85, 0.3);
   }
 }
 
@@ -220,17 +182,6 @@
     transform: scale(0.9);
   }
   100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
     opacity: 1;
     transform: scale(1);
   }

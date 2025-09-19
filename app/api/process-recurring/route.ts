@@ -57,7 +57,6 @@ export async function POST(request: NextRequest): Promise<NextResponse<ApiRespon
             familyCode: recurring.familyCode,
             isRecurring: true,
             recurringId: recurring.id,
-            paymentMethod: recurring.paymentMethod || "card",
           })
 
           await updateRecurringSpending(recurring.id, {

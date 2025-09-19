@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import ThemeToggle from "@/components/theme-toggle"
 
 export default function LoginPage() {
   const [familyCode, setFamilyCode] = useState("")
@@ -29,19 +28,7 @@ export default function LoginPage() {
 
       if (!response.ok) {
         console.error("[v0] HTTP 에러:", response.status, response.statusText)
-        
-        // 에러 응답에서 상세 메시지 가져오기
-        let errorMessage = `서버 오류가 발생했습니다 (${response.status})`
-        try {
-          const errorData = await response.json()
-          if (errorData.error) {
-            errorMessage = errorData.error
-          }
-        } catch (e) {
-          // JSON 파싱 실패 시 기본 메시지 사용
-        }
-        
-        alert(errorMessage)
+        alert(`서버 오류가 발생했습니다 (${response.status})`)
         return
       }
 
@@ -76,27 +63,23 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-slate-900 dark:to-slate-800 p-4">
-      <ThemeToggle />
-      <Card className="w-full max-w-md glass-effect hover-lift animate-scale-in">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-foreground">부부 가계부에 오신 걸 환영해요! 💑</CardTitle>
-          <CardDescription className="text-muted-foreground">가족코드와 이름을 입력하고 시작하세요</CardDescription>
+          <CardTitle className="text-2xl font-bold text-gray-800">부부 가계부에 오신 걸 환영해요! 💑</CardTitle>
+          <CardDescription className="text-gray-600">가족코드와 이름을 입력하고 시작하세요</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <Input
                 type="text"
-                placeholder="가족코드 (영문+숫자 3-20자)"
+                placeholder="가족코드 (예: FAMILY2025)"
                 value={familyCode}
                 onChange={(e) => setFamilyCode(e.target.value)}
                 className="text-center text-lg"
                 disabled={isLoading}
               />
-              <p className="text-xs text-muted-foreground mt-1 text-center">
-                예: FAMILY2025, HOME123, MYFAMILY
-              </p>
             </div>
             <div>
               <Input
@@ -116,10 +99,9 @@ export default function LoginPage() {
               {isLoading ? "입장 중..." : "시작하기"}
             </Button>
           </form>
-          <div className="mt-6 text-sm text-muted-foreground text-center">
+          <div className="mt-6 text-sm text-gray-500 text-center">
             <p>💡 처음 사용하시나요?</p>
-            <p>영문+숫자로 된 새로운 가족코드를 입력하면 자동으로 생성됩니다</p>
-            <p className="text-xs mt-1">가족코드는 3-20자 영문과 숫자만 사용 가능합니다</p>
+            <p>새로운 가족코드를 입력하면 자동으로 생성됩니다</p>
           </div>
         </CardContent>
       </Card>

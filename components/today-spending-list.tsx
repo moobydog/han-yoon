@@ -3,58 +3,74 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Trash2 } from "lucide-react"
-import DeleteConfirmation from "@/components/delete-confirmation"
-import type { Spending, User } from "@/lib/types"
-import { getPaymentMethodIcon, getPaymentMethodLabel } from "@/lib/types"
+import type { SpendingRecord, User } from "@/lib/types"
 
 interface TodaySpendingListProps {
   user: User
   refreshTrigger?: number
-  onSpendingDeleted?: () => void
 }
 
-export default function TodaySpendingList({ user, refreshTrigger, onSpendingDeleted }: TodaySpendingListProps) {
-  const [todaySpending, setTodaySpending] = useState<Spending[]>([])
+export default function TodaySpendingList({ user, refreshTrigger }: TodaySpendingListProps) {
+  const [todaySpending, setTodaySpending] = useState<SpendingRecord[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [deleteConfirm, setDeleteConfirm] = useState<{
-    isOpen: boolean
-    record: Spending | null
-    isDeleting: boolean
-  }>({
-    isOpen: false,
-    record: null,
-    isDeleting: false
-  })
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const loadTodaySpending = async () => {
     try {
       console.log("[v0] 오늘 지출 내역 로딩 시작")
-      const response = await fetch(`/api/spending?familyCodes=${user.familyCode}`)
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-      
+      const response = await fetch(`/api/spending?familyCode=${user.familyCode}`)
       const result = await response.json()
 
-      if (result.success && Array.isArray(result.data)) {
+      if (result.success) {
         const today = new Date().toISOString().split("T")[0]
-        const todayRecords = result.data.filter((record: Spending) => {
+        const todayRecords = result.data.filter((record: SpendingRecord) => {
           const recordDate = record.date || record.createdAt
           return recordDate && recordDate.startsWith(today)
         })
         console.log("[v0] 오늘 지출 내역:", todayRecords)
         setTodaySpending(todayRecords)
-      } else {
-        console.warn("[v0] 오늘 지출 내역 로딩 실패:", result.error)
-        setTodaySpending([])
       }
     } catch (error) {
       console.error("[v0] 오늘 지출 내역 로딩 에러:", error)
-      setTodaySpending([])
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleDeleteSpending = async (id: string) => {
+    setDeletingId(id)
+    try {
+      console.log("[v0] 지출 삭제 요청:", id)
+      const response = await fetch(`/api/spending?id=${id}`, {
+        method: "DELETE",
+      })
+      const result = await response.json()
+
+      if (result.success) {
+        console.log("[v0] 지출 삭제 완료:", id)
+        // Remove from local state
+        setTodaySpending((prev) => prev.filter((spending) => spending.id !== id))
+      } else {
+        console.error("[v0] 지출 삭제 실패:", result.error)
+        alert("지출 삭제에 실패했습니다: " + result.error)
+      }
+    } catch (error) {
+      console.error("[v0] 지출 삭제 에러:", error)
+      alert("지출 삭제 중 오류가 발생했습니다")
+    } finally {
+      setDeletingId(null)
     }
   }
 
@@ -63,58 +79,6 @@ export default function TodaySpendingList({ user, refreshTrigger, onSpendingDele
   }, [user.familyCode, refreshTrigger])
 
   const totalAmount = todaySpending.reduce((sum, record) => sum + record.amount, 0)
-
-  const handleDeleteClick = (record: Spending) => {
-    setDeleteConfirm({
-      isOpen: true,
-      record,
-      isDeleting: false
-    })
-  }
-
-  const handleDeleteConfirm = async () => {
-    if (!deleteConfirm.record) return
-
-    setDeleteConfirm(prev => ({ ...prev, isDeleting: true }))
-
-    try {
-      const response = await fetch(`/api/spending?id=${deleteConfirm.record.id}`, {
-        method: 'DELETE'
-      })
-
-      if (response.ok) {
-        // 로컬 상태에서 제거
-        setTodaySpending(prev => 
-          prev.filter(record => record.id !== deleteConfirm.record!.id)
-        )
-        
-        // 부모 컴포넌트에 삭제 완료 알림
-        onSpendingDeleted?.()
-        
-        console.log("[v0] 지출 삭제 성공:", deleteConfirm.record.id)
-      } else {
-        const result = await response.json()
-        alert(result.error || "삭제에 실패했습니다.")
-      }
-    } catch (error) {
-      console.error("[v0] 지출 삭제 에러:", error)
-      alert("삭제 중 오류가 발생했습니다.")
-    } finally {
-      setDeleteConfirm({
-        isOpen: false,
-        record: null,
-        isDeleting: false
-      })
-    }
-  }
-
-  const handleDeleteCancel = () => {
-    setDeleteConfirm({
-      isOpen: false,
-      record: null,
-      isDeleting: false
-    })
-  }
 
   if (isLoading) {
     return (
@@ -154,69 +118,81 @@ export default function TodaySpendingList({ user, refreshTrigger, onSpendingDele
             {todaySpending.map((record, index) => (
               <div
                 key={record.id}
-                className="bg-card border border-border rounded-lg p-4 hover:shadow-md transition-all duration-200 group"
+                className="flex items-center justify-between p-4 bg-card rounded-lg border border-border hover:shadow-md transition-all duration-200 animate-fade-in group"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="flex items-start justify-between gap-3">
-                  {/* 왼쪽: 카테고리와 메모 */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
-                      <span className="text-sm font-medium text-foreground truncate">
-                        {record.category}
-                      </span>
-                      <span className="text-xs text-muted-foreground flex items-center gap-1">
-                        <span>{getPaymentMethodIcon(record.paymentMethod || "card")}</span>
-                        <span>{getPaymentMethodLabel(record.paymentMethod || "card")}</span>
-                      </span>
-                    </div>
-                    
-                    {record.memo && (
-                      <div className="text-sm text-muted-foreground truncate mb-1">
-                        {record.memo}
-                      </div>
-                    )}
-                    
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full">
-                        {record.userName}
-                      </span>
-                    </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-semibold text-foreground">{record.category}</span>
+                    <span className="text-xs bg-muted text-muted-foreground px-2 py-1 rounded-full">
+                      {record.userName}
+                    </span>
                   </div>
-                  
-                  {/* 오른쪽: 금액과 삭제 버튼 */}
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <div className="text-right">
-                      <div className="font-bold text-lg text-red-600 dark:text-red-400">
-                        -{record.amount.toLocaleString()}원
-                      </div>
+                  {record.memo && (
+                    <div className="text-sm text-muted-foreground mb-1 bg-muted/30 px-2 py-1 rounded">
+                      {record.memo}
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDeleteClick(record)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 p-2 h-8 w-8 border-red-300 bg-red-50 dark:bg-red-900/10"
-                      title="삭제하기"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </Button>
+                  )}
+                  <div className="text-xs text-muted-foreground">
+                    {new Date(record.date || record.createdAt).toLocaleTimeString("ko-KR", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <div className="font-bold text-lg text-accent">{record.amount.toLocaleString()}원</div>
+                  </div>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive hover:bg-destructive/10"
+                        disabled={deletingId === record.id}
+                      >
+                        {deletingId === record.id ? (
+                          <div className="w-4 h-4 border-2 border-destructive border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>지출 내역을 삭제하시겠습니까?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          <div className="space-y-2">
+                            <p>다음 지출 내역이 영구적으로 삭제됩니다:</p>
+                            <div className="bg-muted p-3 rounded-lg">
+                              <div className="font-semibold">
+                                {record.category} - {record.amount.toLocaleString()}원
+                              </div>
+                              {record.memo && <div className="text-sm text-muted-foreground">{record.memo}</div>}
+                              <div className="text-xs text-muted-foreground">{record.userName}</div>
+                            </div>
+                            <p className="text-sm">이 작업은 되돌릴 수 없습니다.</p>
+                          </div>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>취소</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDeleteSpending(record.id)}
+                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                          삭제
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </div>
               </div>
             ))}
           </div>
         )}
       </CardContent>
-      
-      <DeleteConfirmation
-        isOpen={deleteConfirm.isOpen}
-        onClose={handleDeleteCancel}
-        onConfirm={handleDeleteConfirm}
-        title="지출 삭제"
-        description="이 지출 내역을 삭제하시겠습니까?"
-        itemName={deleteConfirm.record ? `${deleteConfirm.record.category} - ${deleteConfirm.record.amount.toLocaleString()}원` : undefined}
-        isLoading={deleteConfirm.isDeleting}
-      />
     </Card>
   )
 }

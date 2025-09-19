@@ -99,7 +99,7 @@ export default function RecurringPage() {
     <div className="min-h-screen bg-gray-50">
       <Navigation user={user} />
       <main className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-gray-800 mb-2">정기지출 관리</h1>
             <p className="text-gray-600">매월 자동으로 반영되는 지출을 관리하세요</p>
